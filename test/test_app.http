@@ -1,0 +1,11 @@
+# Test your FastAPI endpoints
+
+POST http://127.0.0.1:8000/predict
+Content-Type: application/json
+Accept: application/json
+
+{
+  "skills": ["SQL", "JavaScript"]
+}
+
+###
