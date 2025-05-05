@@ -3,10 +3,10 @@ from tensorflow.keras.models import load_model
 import numpy as np
 import joblib
 from dotenv import load_dotenv
-from .settings import Settings
+from ml.settings import Settings
 from typing import List
 
-load_dotenv(dotenv_path="./config/.env.prod")
+load_dotenv(dotenv_path="./config/.ml-env")
 settings = Settings()
 
 job_model = load_model(settings.JOB_PREDICT_MODEL_PATH)

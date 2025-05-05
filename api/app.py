@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from .predictor import predict_job_role
-from .rest_model import PredictRequest, PredictResponse
+from ml.predictor import predict_job_role
+from api.model import PredictRequest, PredictResponse
 
 app = FastAPI()
 
