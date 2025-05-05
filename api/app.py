@@ -7,5 +7,4 @@ app = FastAPI()
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest):
-    prediction = predict_job_role(request.skills)
-    return PredictResponse(prediction=prediction)
+    return PredictResponse(prediction=predict_job_role(request.skills))

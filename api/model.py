@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Tuple
 
 
 class PredictRequest(BaseModel):
@@ -7,4 +7,4 @@ class PredictRequest(BaseModel):
 
 
 class PredictResponse(BaseModel):
-    prediction: str
+    prediction: List[Tuple[str, float]]
