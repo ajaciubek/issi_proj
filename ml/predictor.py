@@ -11,7 +11,7 @@ settings = Settings()
 
 job_model = load_model(settings.JOB_PREDICT_MODEL_PATH)
 label_encoder = joblib.load(settings.LABEL_MODEL_PATH)
-encoder = SentenceTransformer("all-MiniLM-L6-v2")
+encoder = SentenceTransformer(settings.SENTENCE_TRANSFORMER_MODEL)
 
 
 def predict_job_role(skills: List[str]) -> List[str]:
