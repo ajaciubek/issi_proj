@@ -1,0 +1,4 @@
+CUDA_VISIBLE_DEVICES=""
+LABEL_MODEL_PATH="./data/role_label_encoder.pkl"
+JOB_PREDICT_MODEL_PATH="./data/job_model.keras"
+SENTENCE_TRANSFORMER_MODEL="all-MiniLM-L6-v2"
