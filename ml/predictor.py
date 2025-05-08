@@ -14,12 +14,12 @@ label_encoder = joblib.load(settings.LABEL_MODEL_PATH)
 encoder = SentenceTransformer(settings.SENTENCE_TRANSFORMER_MODEL)
 
 
-def predict_job_role(skills: List[str]) -> List[str]:
+def predict_job_role(skills: List[str], limit: int) -> List[str]:
     input = encoder.encode(" ".join(skills))
     input = np.expand_dims(input, axis=0)
 
     predictions = job_model.predict(input)
-    indices = predictions[0].argsort()[-5:][::-1]
+    indices = predictions[0].argsort()[-limit:][::-1]
     propabilities = predictions[0][indices]
     roles = label_encoder.inverse_transform(indices)
 
