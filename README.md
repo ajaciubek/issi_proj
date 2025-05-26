@@ -1,4 +1,4 @@
-# Carriere advisor
+# Career Navigator
 ## Prequistes
 1. Ubuntu 22.04 on WSL
 2. python3.12
