@@ -1,5 +1,5 @@
 outs:
-- md5: 2dc2e9f7bcb76884cd1330b5bb60a733
-  size: 60487
+- md5: 036d94139dd89fa72b08c96a68fc3af6
+  size: 6651
   hash: md5
   path: role_label_encoder.pkl
