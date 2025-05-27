@@ -2,9 +2,10 @@ import { useState } from 'react'
 import './App.css'
 import PathSelection from './components/pathselection'
 import SkillsSelect from './components/SkillsSelect'
+import MatchResults from './components/MatchResults'
 
 function App() {
-  const [userSkills, setUserSkills] = useState(["python", "api", "pandas", "pyTorch"])
+  const [userSkills, setUserSkills] = useState()
   const [positionCateogries, setPositionCategories] = useState(["Backend", "Data Science", "Databases"])
   const defaultSkillOptions = [
     {value: "1", label: "python"},
@@ -17,12 +18,17 @@ function App() {
   
   return (
     <>
-      <div>
+      
+      { !userSkills && <div>
         <SkillsSelect skillsOptions={skillsOptions} onSkillsChange={onSkillsChange}></SkillsSelect>
-      </div>
+      </div> }
+
+      { userSkills && <div>
+        <PathSelection userSkills={userSkills} positionCateogries={positionCateogries}></PathSelection>
+      </div> }
       <hr></hr>
       <div>
-        <PathSelection userSkills={userSkills} positionCateogries={positionCateogries}></PathSelection>
+        <MatchResults></MatchResults>
       </div>
     </>
   )
