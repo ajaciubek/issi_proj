@@ -52,12 +52,7 @@ def generate_prompt(position: str, description: str, skills: str, roles: str) ->
 def generate_response(prompt: str) -> Optional[str]:
     try:
         response = gemini_client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
-            # generation_config={
-            #     "temperature": 0.5,
-            #     "max_output_tokens": 10,
-            # },
+            model="gemini-2.0-flash", contents=prompt
         )
         return response.text.strip()
     except Exception as e:
