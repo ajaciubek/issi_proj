@@ -13,12 +13,12 @@ function App() {
     {value: "4", label: "pyTorch"}
   ]
   const [skillsOptions, setSkills] = useState(defaultSkillOptions)
-
+  const onSkillsChange = (selectedSkills) => setUserSkills(selectedSkills)
   
   return (
     <>
       <div>
-        <SkillsSelect skillsOptions={skillsOptions}></SkillsSelect>
+        <SkillsSelect skillsOptions={skillsOptions} onSkillsChange={onSkillsChange}></SkillsSelect>
       </div>
       <hr></hr>
       <div>
