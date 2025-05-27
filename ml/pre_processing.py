@@ -129,6 +129,6 @@ def pre_process_df(df: pl.DataFrame, encoder: LabelEncoder) -> pl.DataFrame:
 
 
 label_encoder = joblib.load(settings.LABEL_MODEL_PATH)
-df = pl.scan_parquet("./data/raw_data.parquet").head(10)
+df = pl.scan_parquet("./data/pre_processed_data.parquet")
 df = pre_process_df(df, label_encoder)
-# df.write_csv("./data/pre_processed_data.parquet", compression="zstd")
+df.write_csv("./data/pre_processed_data.parquet", compression="zstd")
