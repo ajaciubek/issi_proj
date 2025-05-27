@@ -8,4 +8,4 @@
 ## How to start
 1. uv sync
 2. dvc pull
-3. uv run uvicorn src.app:app
+3. uv run uvicorn api.app:app
