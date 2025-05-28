@@ -1,0 +1,156 @@
+openapi: 3.0.4
+info:
+  title: Swagger Career Navigator - OpenAPI 3.0
+  version: 1.0.12
+externalDocs:
+  description: Find out more about Swagger
+  url: https://swagger.io
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+
+paths:
+  /recommend:
+    post:
+      summary: 'Get a recomendation based on the skills.'
+      description: 'Get a recomendation based on the skills.'
+      operationId: 'getRecommendation'
+      requestBody:
+        description: 'Information about user skills'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+      
+        required: true
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationResponse'
+
+  /available_skills:
+    get:
+      summary: 'List of skills to select from.'
+      description: 'List of skills to select from.'
+      operationId: 'selectSkills'
+
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillsResponse'
+                
+  /suggest_category:
+    post:
+      summary: 'Returns a category list'
+      description: 'A list of matching high-level categories based on user skills i.e. Backend, DevOps, Data Analysis'
+      operationId: 'suggestCategory'
+      requestBody:
+        description: 'Information about user skills'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+        required: true
+        
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+
+components:
+  schemas:
+  
+    RecommendationRequest:
+      type: object
+      required:
+        - skills
+        - path
+      properties:
+        skills:
+          description: 'Set of skills provided by a user'
+          type: array
+          items: 
+            type: string
+            example: 'Python'
+        category:
+          type: string
+          description: 'Category selected by a user'
+          example: 'Backend'
+          
+    RecommendationSkill:
+      type: object
+      properties:
+        skillGapPercent:
+          description: 'Pecent of job ads that require given skill'
+          type: integer
+          example: 40
+        skill:
+          description: 'Skill that is required for the recommended role'
+          type: string
+          example: 'Python'
+        status:
+          description: 'Information whether user has given skill or not'
+          type: boolean
+          example: true
+
+    RecommendationRole:
+      type: object
+      properties:
+        role:
+          type: string
+          example: 'Python Developer'
+        matchPercent:
+          type: integer
+          example: 80
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecommendationSkill'
+          
+    RecommendationResponse:
+      type: object
+      properties:
+        recommendations:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecommendationRole'   
+            
+    SkillsResponse:
+      type: object
+      properties:
+        skills:
+          type: array
+          items: 
+            type: string
+            example: 'Python'
+          
+    CategoryRequest:
+      type: object
+      description: 'Selected user skillset'
+      properties:
+        skills:
+          type: array
+          items: 
+            type: string
+            example: 'Python'    
+      
+    CategoryResponse:
+      type: object
+      description: 'A list of max 3 categories based on highest probability'
+      properties:
+        categories:
+          type: array
+          items: 
+            type: string
+            example: 'Backend' 
+    
+    
