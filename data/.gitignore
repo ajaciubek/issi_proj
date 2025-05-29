@@ -1,3 +1,5 @@
 /raw_data.parquet
 /job_model.keras
 /role_label_encoder.pkl
+/metadata.json
+/pre_processed_data.parquet
