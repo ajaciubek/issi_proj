@@ -28,7 +28,7 @@ def load_data_from_json(data_type: str) -> List[str]:
 
 def get_skills(text: str) -> Optional[str]:
     if not text:
-        return []
+        return None
     doc = nlp(text)
     skills = {ent.text.lower() for ent in doc.ents if ent.label_ == "TECH_STACK"}
     if len(skills) <= 3:
