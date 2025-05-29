@@ -86,6 +86,9 @@ export default function MatchResults({skillsOptions, onSkillsChange}) {
 
     return (
         <>
+        <h1>Pefect match!</h1>
+        <div>Here are some roles that match your skills best. Click to see details, and give a thumbs up 
+        to the ones you like—it helps me learn and improve future matches!</div>
         {roleRecommedationsPanels}
         </>
     )
