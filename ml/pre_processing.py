@@ -9,6 +9,9 @@ from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import LabelEncoder
 import joblib
 
+skills_count = 0
+ner_count = 0
+
 load_dotenv(dotenv_path="./config/.ml-env")
 settings = Settings()
 nlp = spacy.load("en_core_web_sm")
@@ -27,6 +30,10 @@ def load_data_from_json(data_type: str) -> List[str]:
 
 
 def get_skills(text: str) -> Optional[str]:
+    global ner_count
+    ner_count += 1
+    if ner_count % 50 == 0:
+        print(f"[INFO] Processed {ner_count} texts for skills extraction.")
     if not text:
         return None
     doc = nlp(text)
@@ -36,23 +43,36 @@ def get_skills(text: str) -> Optional[str]:
     return ",".join(sorted(skills))
 
 
-def generate_prompt(position: str, description: str, skills: str, roles: str) -> str:
-    return (
-        f"You are a job role generator.\n"
-        f"Given the position name, description, and skills, classify it into one of the predefined roles.\n"
-        f"Choose exactly one role from the Roles list that best fits the job.\n"
-        f"Respond with only the name of the selected role — no explanation, no punctuation.\n"
-        f"Position: {position}\n"
-        f"Description: {description}\n"
-        f"Skills: {skills}\n"
-        f"Roles: {roles}"
-    )
+def generate_prompt_xml(
+    position: str, description: str, skills: str, roles_xml: str
+) -> str:
+    return f"""<job_classification_task>
+  <instructions>
+    Classify the job into exactly one of the roles listed below.
+    Return only the role name, exactly as it appears in the list.
+    Do not include punctuation or explanations.
+  </instructions>
+  <job_offer>
+    <position>{position}</position>
+    <description>{description}</description>
+    <skills>{skills}</skills>
+  </job_offer>
+  <roles>
+    {roles_xml}
+  </roles>
+</job_classification_task>"""
 
 
 def generate_response(prompt: str) -> Optional[str]:
+    global skills_count
+    skills_count += 1
+    if skills_count % 50 == 0:
+        print(f"[INFO] Processed {skills_count} skills so far.")
     try:
         response = gemini_client.models.generate_content(
-            model="gemini-2.0-flash", contents=prompt
+            model="gemini-2.0-flash",
+            contents=prompt,
+            config=genai.types.GenerateContentConfig(temperature=0.1),
         )
         return response.text.strip()
     except Exception as e:
@@ -61,9 +81,9 @@ def generate_response(prompt: str) -> Optional[str]:
 
 
 def get_label(
-    position: str, description: str, skills: str, roles: str
+    position: str, description: str, skills: str, roles: List[str]
 ) -> Optional[str]:
-    return generate_response(generate_prompt(position, description, skills, roles))
+    return generate_response(generate_prompt_xml(position, description, skills, roles))
 
 
 def pre_process_df(df: pl.DataFrame, encoder: LabelEncoder) -> pl.DataFrame:
@@ -74,8 +94,8 @@ def pre_process_df(df: pl.DataFrame, encoder: LabelEncoder) -> pl.DataFrame:
         for term in tech_terms
     ]
     ruler.add_patterns(patterns)
-    roles_list = load_data_from_json("Roles")
-    roles = str(roles_list)
+    roles = load_data_from_json("Roles")
+    roles_xml = "".join([f"<role>{role}</role>" for role in roles])
 
     df = (
         df.with_columns(
@@ -96,14 +116,14 @@ def pre_process_df(df: pl.DataFrame, encoder: LabelEncoder) -> pl.DataFrame:
             pl.struct(["Position", "Description", "Skills"])
             .map_elements(
                 lambda row: get_label(
-                    row["Position"], row["Description"], row["Skills"], roles
+                    row["Position"], row["Description"], row["Skills"], roles_xml
                 ),
                 return_dtype=pl.Utf8,
             )
             .alias("Label")
         )
         .drop(["Position", "Description"])
-        .filter(pl.col("Label").is_in(roles_list))
+        .filter(pl.col("Label").is_in(roles))
         .collect()
     )
     labels_encoded = encoder.transform(df["Label"].to_list())
@@ -124,6 +144,7 @@ def pre_process_df(df: pl.DataFrame, encoder: LabelEncoder) -> pl.DataFrame:
 
 
 label_encoder = joblib.load(settings.LABEL_MODEL_PATH)
-df = pl.scan_parquet("./data/raw_data.parquet.parquet")
+df = pl.scan_parquet("./data/raw_data.parquet")
 df = pre_process_df(df, label_encoder)
-df.write_csv("./data/pre_processed_data.parquet", compression="zstd")
+df.write_parquet("./data/pre_processed_data.parquet", compression="zstd")
+df.write_csv("./data/pre_processed_data.csv")
