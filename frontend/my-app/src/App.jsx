@@ -6,15 +6,16 @@ import MatchResults from './components/MatchResults'
 
 
 function App() {
-  const [userSkills, setUserSkills] = useState()
-  const [positionCateogries, setPositionCategories] = useState(["Backend", "Data Science", "Databases"])
+
+  const defaultCategories = ["Backend", "Data Science", "Databases"]
+
   const defaultSkillOptions = [
     {value: "1", label: "python"},
     {value: "2", label: "api"},
     {value: "3", label: "pandas"},
     {value: "4", label: "pyTorch"}
   ]
-  const [skillsOptions, setSkills] = useState(defaultSkillOptions)
+
   const defaultRecommendations = [
     {
         Role : "Machine Learning Engineer",
@@ -39,23 +40,43 @@ function App() {
         ]
     }
   ]
+
+
+
+
+  const [userSkills, setUserSkills] = useState()
+  const [positionCateogries, setPositionCategories] = useState()
+  
+  const [skillsOptions, setSkills] = useState(defaultSkillOptions)
+  
   const [recommendations, setRecommendations] = useState()
   
   
-  const onSkillsChange = (selectedSkills) => setUserSkills(selectedSkills)
-  const onCategorySelected = (selectedCategpory) => setRecommendations(defaultRecommendations)
+  const onSkillsChange = (selectedSkills) => { 
+    
+    // ToDo  fetch()
 
+    setUserSkills(selectedSkills)
+    setPositionCategories(defaultCategories)
+  }
+
+  const onCategorySelected = (selectedCategpory) => {
+    // ToDo  fetch()
+
+    setRecommendations(defaultRecommendations)
+  }
   
+
   return (
-    <>
-      
+    <>    
       { !userSkills && <div>
         <SkillsSelect skillsOptions={skillsOptions} onSkillsChange={onSkillsChange}></SkillsSelect>
       </div> }
 
-      { userSkills && !recommendations && <div>
+      { positionCateogries && !recommendations && <div>
         <PathSelection userSkills={userSkills} positionCateogries={positionCateogries} onCategorySelected={onCategorySelected}></PathSelection>
       </div> }
+      
       {recommendations && <div>
         <MatchResults roleRecommendations={recommendations}></MatchResults>
       </div> }

@@ -51,7 +51,7 @@ export default function SkillsSelect({skillsOptions, onSkillsChange}) {
                         }),
                     }}
                 />
-                <button onClick={onSubmit}>Show directions</button>
+                <button  onClick={onSubmit}>Show directions</button>
             </div>
             <div>
             {displayWarning && <p>
