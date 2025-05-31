@@ -7,31 +7,9 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
-const dummyValues = [
-    {
-        Role : "Machine Learning Engineer",
-        MatchPercent: 98,
-        Skills: [
-            {Skill: "Python", Status: true},
-            {Skill: "Pandas", Status: true},
-            {Skill: "pyTorch", Status: true},
-            {Skill: "TensorFlow", Status: true},
-            {Skill: "Polars", Status: false, SkillGapPercent: 40,}
-        ]
-    },
-    {
-        Role : "Python Developer",
-        MatchPercent: 69,
-        Skills: [
-            {Skill: "Python", Status: true},
-            {Skill: "Pandas", Status: true},
-            {Skill: "Flask", Status: true},
-            {Skill: "FastAPI", Status: false, SkillGapPercent: 90},
-            {Skill: "SQL Alchemy", Status: false, SkillGapPercent: 11,}
-        ]
-    }
-]
+
 
 const createRolePanel = (role) => {
     return (
@@ -78,17 +56,18 @@ const calculateColor = (matchPercent) => {
 }
 
 
-export default function MatchResults({skillsOptions, onSkillsChange}) {
-
-    const roleRecommendations = dummyValues;
+export default function MatchResults({roleRecommendations}) {
     const roleRecommedationsPanels=roleRecommendations.map(createRolePanel
     );
 
     return (
         <>
         <h1>Pefect match!</h1>
-        <div>Here are some roles that match your skills best. Click to see details, and give a thumbs up 
-        to the ones you like—it helps me learn and improve future matches!</div>
+        <div style= {{color: 'green'}}>
+            <ChatBubbleOutlineIcon style={{margin: '0px 0.4em -0.3em -2em'}} />
+            Here are some roles that match your skills best. Click to see details, and give a thumbs up 
+        to the ones you like — it helps me learn and improve future matches!
+        </div>
         {roleRecommedationsPanels}
         </>
     )

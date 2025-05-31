@@ -1,8 +1,9 @@
-export default function PathSelection({userSkills, positionCateogries}) {
+export default function PathSelection({userSkills, positionCateogries, onCategorySelected}) {
     
     const positionCateogryButtons=positionCateogries.map(category => {
-        return <button>{category}</button>
+        return <button onClick={() => onCategorySelected (category)}>{category}</button>
     })
+
     
     return (
         <div>
