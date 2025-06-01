@@ -8,14 +8,8 @@ from typing import List, Optional
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import LabelEncoder
 import joblib
-
-skills_count = 0
-ner_count = 0
-
-load_dotenv(dotenv_path="./config/.ml-env")
-settings = Settings()
-nlp = spacy.load("en_core_web_sm")
-gemini_client = genai.Client(api_key=settings.GEMINI_KEY)
+import glob
+from pathlib import Path
 
 
 def load_data_from_json(data_type: str) -> List[str]:
@@ -29,11 +23,23 @@ def load_data_from_json(data_type: str) -> List[str]:
     return list(data)
 
 
+load_dotenv(dotenv_path="./config/.ml-env")
+settings = Settings()
+nlp = spacy.load("en_core_web_sm")
+gemini_client = genai.Client(api_key=settings.GEMINI_KEY)
+model = SentenceTransformer(settings.SENTENCE_TRANSFORMER_MODEL)
+
+tech_terms = load_data_from_json("Skills")
+ruler = nlp.add_pipe("entity_ruler", before="ner")
+patterns = [
+    {"label": "TECH_STACK", "pattern": [{"lower": term.lower()}]} for term in tech_terms
+]
+ruler.add_patterns(patterns)
+roles = load_data_from_json("Roles")
+roles_xml = "".join([f"<role>{role}</role>" for role in roles])
+
+
 def get_skills(text: str) -> Optional[str]:
-    global ner_count
-    ner_count += 1
-    if ner_count % 50 == 0:
-        print(f"[INFO] Processed {ner_count} texts for skills extraction.")
     if not text:
         return None
     doc = nlp(text)
@@ -64,10 +70,6 @@ def generate_prompt_xml(
 
 
 def generate_response(prompt: str) -> Optional[str]:
-    global skills_count
-    skills_count += 1
-    if skills_count % 50 == 0:
-        print(f"[INFO] Processed {skills_count} skills so far.")
     try:
         response = gemini_client.models.generate_content(
             model="gemini-2.0-flash",
@@ -77,7 +79,7 @@ def generate_response(prompt: str) -> Optional[str]:
         return response.text.strip()
     except Exception as e:
         print(f"[ERROR] Gemini generation failed: {e}")
-        return None
+        return generate_response(prompt)  # Retry with the same prompt
 
 
 def get_label(
@@ -87,16 +89,6 @@ def get_label(
 
 
 def pre_process_df(df: pl.DataFrame, encoder: LabelEncoder) -> pl.DataFrame:
-    tech_terms = load_data_from_json("Skills")
-    ruler = nlp.add_pipe("entity_ruler", before="ner")
-    patterns = [
-        {"label": "TECH_STACK", "pattern": [{"lower": term.lower()}]}
-        for term in tech_terms
-    ]
-    ruler.add_patterns(patterns)
-    roles = load_data_from_json("Roles")
-    roles_xml = "".join([f"<role>{role}</role>" for role in roles])
-
     df = (
         df.with_columns(
             pl.col("Long Description")
@@ -126,25 +118,61 @@ def pre_process_df(df: pl.DataFrame, encoder: LabelEncoder) -> pl.DataFrame:
         .filter(pl.col("Label").is_in(roles))
         .collect()
     )
-    labels_encoded = encoder.transform(df["Label"].to_list())
-    model = SentenceTransformer(settings.SENTENCE_TRANSFORMER_MODEL)
-    embeddings = model.encode(df["Skills"].to_list(), show_progress_bar=True)
 
-    embedding_df = pl.DataFrame(
-        embeddings, schema=[f"emb_{i}" for i in range(len(embeddings[0]))]
-    )
+    if not df.is_empty():
+        labels_encoded = encoder.transform(df["Label"].to_list())
+        embeddings = model.encode(df["Skills"].to_list(), show_progress_bar=True)
 
-    df = (
-        df.drop(["Skills", "Label"])
-        .with_columns([pl.Series("Role_encoded", labels_encoded)])
-        .hstack(embedding_df)
-    )
+        embedding_df = pl.DataFrame(
+            embeddings, schema=[f"emb_{i}" for i in range(len(embeddings[0]))]
+        )
+
+        df = (
+            df.drop(["Skills", "Label"])
+            .with_columns([pl.Series("Role_encoded", labels_encoded)])
+            .hstack(embedding_df)
+        )
 
     return df
 
 
-label_encoder = joblib.load(settings.LABEL_MODEL_PATH)
+def combine_batches() -> pl.DataFrame:
+    files = glob.glob("./data/batches/*.parquet")
+    dfs = []
+
+    for file in files:
+        df = pl.read_parquet(file)
+        dfs.append(df)
+
+    combined_df = pl.concat(dfs)
+    return combined_df
+
+
+batch_size = 200
+offset = 0
+
+label_encoder = LabelEncoder()
+label_encoder.fit(roles)
+joblib.dump(label_encoder, Path(settings.LABEL_MODEL_PATH))
+
 df = pl.scan_parquet("./data/raw_data.parquet")
-df = pre_process_df(df, label_encoder)
-df.write_parquet("./data/pre_processed_data.parquet", compression="zstd")
-df.write_csv("./data/pre_processed_data.csv")
+length = df.select(pl.len()).collect().item()
+
+while offset < length:
+    batch = df.slice(offset, batch_size)
+
+    batch = pre_process_df(batch, label_encoder)
+    if not batch.is_empty():
+        batch.write_parquet(
+            f"./data/batches/pre_processed_data_{offset}.parquet", compression="zstd"
+        )
+
+    print(f"Processed {offset} records.")
+    offset += batch_size
+
+df = combine_batches()
+
+df.write_parquet(
+    "./data/pre_processed_data.parquet",
+    compression="zstd",
+)

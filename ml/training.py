@@ -32,6 +32,8 @@ model = keras.Sequential(
         layers.Dropout(0.3),
         layers.Dense(256, activation="relu"),
         layers.Dropout(0.3),
+        layers.Dense(256, activation="relu"),
+        layers.Dropout(0.3),
         layers.Dense(128, activation="relu"),
         layers.Dropout(0.3),
         layers.Dense(64, activation="relu"),
