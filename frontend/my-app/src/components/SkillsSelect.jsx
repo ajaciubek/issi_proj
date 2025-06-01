@@ -3,6 +3,8 @@ import Select from 'react-select';
 
 export default function SkillsSelect({skillsOptions, onSkillsChange}) {
 
+    const optionKeyValues = skillsOptions.map(op => ({value:op, label:op}))
+
     const [selection, setSelection] = useState([])
     const [displayWarning, setDisplayWarning] = useState(false)
     const onChange = (
@@ -17,7 +19,7 @@ export default function SkillsSelect({skillsOptions, onSkillsChange}) {
         }
         else {
             setDisplayWarning (false)
-            onSkillsChange(selection)
+            onSkillsChange(selection.map(skill => skill.value))
         }
     }
 
@@ -35,7 +37,7 @@ export default function SkillsSelect({skillsOptions, onSkillsChange}) {
                 <Select
                     isMulti
                     name="skills"
-                    options={skillsOptions}
+                    options={optionKeyValues}
                     className="basic-multi-select"
                     classNamePrefix="select"
                     onChange={onChange}

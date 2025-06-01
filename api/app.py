@@ -1,9 +1,23 @@
 from fastapi import FastAPI
 from ml.predictor import predict_job_role
 from api.model import CategoryRequest, CategoryResponse, RecommendationRequest, RecommendationResponse,RecommendationSkill,  RecommendationRole, SkillsResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 FAKE_RECOMMENDATIONS = [
     RecommendationRole(

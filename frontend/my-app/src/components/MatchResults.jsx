@@ -13,21 +13,21 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 const createRolePanel = (role) => {
     return (
-        <div class="match_results">
+        <div class="match_results" key={role.role}>
         <Accordion >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
           id="panel1-header"
-          style={{ backgroundColor: calculateColor(role.MatchPercent) }}
+          style={{ backgroundColor: calculateColor(role.matchPercent) }}
         >
-          <Typography component="span" >{role.Role}</Typography>
-          <Typography component="span" style={{margin: '0 0.5em', color:'gray'}} >({role.MatchPercent}% match)</Typography>
+          <Typography component="span" >{role.role}</Typography>
+          <Typography component="span" style={{margin: '0 0.5em', color:'gray'}} >({role.matchPercent}% match)</Typography>
 
         </AccordionSummary>
         <AccordionDetails>
             <ul>
-          {createRoleSkills(role.Skills)}
+          {createRoleSkills(role.skills)}
           </ul>
         </AccordionDetails>
       </Accordion>
@@ -36,13 +36,13 @@ const createRolePanel = (role) => {
 }
 const createRoleSkills = (skills) => {
     return skills.map(skill => 
-        <li>
-            {skill.Status 
+        <li key={skill.skill} >
+            {skill.status 
                 ? <CheckIcon style={{ color: 'limegreen' }} ></CheckIcon> 
                 : <CloseIcon style={{ color: 'red' }}></CloseIcon>  }
 
-            <span class="name">{skill.Skill}</span>
-            { skill.SkillGapPercent && <span class="gap" style={{margin: '0 0.5em', color:'gray'}}>{skill.SkillGapPercent}% chance this skill is required for this role.</span> }
+            <span className="name">{skill.skill}</span>
+            { skill.skillGapPercent && <span class="gap" style={{margin: '0 0.5em', color:'gray'}}>{skill.skillGapPercent}% chance this skill is required for this role.</span> }
         </li>) 
 
 }

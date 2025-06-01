@@ -1,75 +1,60 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import PathSelection from './components/pathselection'
 import SkillsSelect from './components/SkillsSelect'
 import MatchResults from './components/MatchResults'
 
 
+
 function App() {
-
-  const defaultCategories = ["Backend", "Data Science", "Databases"]
-
-  const defaultSkillOptions = [
-    {value: "1", label: "python"},
-    {value: "2", label: "api"},
-    {value: "3", label: "pandas"},
-    {value: "4", label: "pyTorch"}
-  ]
-
-  const defaultRecommendations = [
-    {
-        Role : "Machine Learning Engineer",
-        MatchPercent: 98,
-        Skills: [
-            {Skill: "Python", Status: true},
-            {Skill: "Pandas", Status: true},
-            {Skill: "pyTorch", Status: true},
-            {Skill: "TensorFlow", Status: true},
-            {Skill: "Polars", Status: false, SkillGapPercent: 40,}
-        ]
-    },
-    {
-        Role : "Python Developer",
-        MatchPercent: 69,
-        Skills: [
-            {Skill: "Python", Status: true},
-            {Skill: "Pandas", Status: true},
-            {Skill: "Flask", Status: true},
-            {Skill: "FastAPI", Status: false, SkillGapPercent: 90},
-            {Skill: "SQL Alchemy", Status: false, SkillGapPercent: 11,}
-        ]
-    }
-  ]
-
-
-
 
   const [userSkills, setUserSkills] = useState()
   const [positionCateogries, setPositionCategories] = useState()
   
-  const [skillsOptions, setSkills] = useState(defaultSkillOptions)
+  const [skillsOptions, setSkillOptions] = useState()
   
   const [recommendations, setRecommendations] = useState()
   
   
   const onSkillsChange = (selectedSkills) => { 
-    
-    // ToDo  fetch()
-
     setUserSkills(selectedSkills)
-    setPositionCategories(defaultCategories)
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ skills: selectedSkills })
+  };
+
+    fetch('http://127.0.0.1:8000/suggest_category', requestOptions)
+    .then(response => response.json())
+    .then(json => setPositionCategories(json.categories))
+    .catch(error => console.error(error));
   }
 
   const onCategorySelected = (selectedCategpory) => {
-    // ToDo  fetch()
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ skills: userSkills, category: selectedCategpory })
+  };
 
-    setRecommendations(defaultRecommendations)
+    fetch('http://127.0.0.1:8000/recommend', requestOptions)
+    .then(response => response.json())
+    .then(json => setRecommendations(json.recommendations))
+    .catch(error => console.error(error));
   }
-  
+
+
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/available_skills')
+      .then(response => response.json())
+      .then(json => setSkillOptions(json.skills))
+      .catch(error => console.error(error));
+  }, []);
+
 
   return (
     <>    
-      { !userSkills && <div>
+      { skillsOptions && !userSkills && <div>
         <SkillsSelect skillsOptions={skillsOptions} onSkillsChange={onSkillsChange}></SkillsSelect>
       </div> }
 
