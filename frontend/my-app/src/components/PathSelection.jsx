@@ -1,3 +1,5 @@
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+
 export default function PathSelection({userSkills, positionCateogries, onCategorySelected}) {
     
     const positionCateogryButtons=positionCateogries.map(category => {
@@ -8,10 +10,11 @@ export default function PathSelection({userSkills, positionCateogries, onCategor
     return (
         <div>
             <h1>Find your path</h1>
-            <div>
+            <p style= {{color: '#CB0000'}}>
+                <ChatBubbleOutlineIcon style={{margin: '0px 0.4em -0.3em 0em'}} />
                 It looks like your skills ({userSkills.join(", ")}) could fit into a few different areas.
-            Which one do you think you'd feel most comfortable in?
-            </div>
+                Which one do you think you'd feel most comfortable in?
+            </p>
             <div>
                 {positionCateogryButtons}
             </div>

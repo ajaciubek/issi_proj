@@ -63,11 +63,11 @@ export default function MatchResults({roleRecommendations}) {
     return (
         <>
         <h1>Pefect match!</h1>
-        <div style= {{color: 'green'}}>
-            <ChatBubbleOutlineIcon style={{margin: '0px 0.4em -0.3em -2em'}} />
+        <p style= {{color: '#00A14E'}}>
+            <ChatBubbleOutlineIcon style={{margin: '0px 0.4em -0.3em 0em'}} />
             Here are some roles that match your skills best. Click to see details, and give a thumbs up 
         to the ones you like — it helps me learn and improve future matches!
-        </div>
+        </p>
         {roleRecommedationsPanels}
         </>
     )

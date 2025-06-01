@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+
 
 export default function SkillsSelect({skillsOptions, onSkillsChange}) {
 
@@ -56,9 +58,10 @@ export default function SkillsSelect({skillsOptions, onSkillsChange}) {
                 <button  onClick={onSubmit}>Show directions</button>
             </div>
             <div>
-            {displayWarning && <p>
-                    Hey! Could you tell me a bit more about your skills?
-            That way, I can recommend roles that are a better match for what you're great at.
+            {displayWarning && <p style= {{color: '#CB0000'}}>
+                <ChatBubbleOutlineIcon style={{margin: '0px 0.4em -0.3em 0em'}} />
+                Hey! Could you tell me a bit more about your skills?
+                That way, I can recommend roles that are a better match for what you're great at.
                 </p>}
             </div>
         </div>
