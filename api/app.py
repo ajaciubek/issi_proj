@@ -1,6 +1,13 @@
 from fastapi import FastAPI
-from ml.predictor import predict_job_role
-from api.model import CategoryRequest, CategoryResponse, RecommendationRequest, RecommendationResponse,RecommendationSkill,  RecommendationRole, SkillsResponse
+from api.model import (
+    CategoryRequest,
+    CategoryResponse,
+    RecommendationRequest,
+    RecommendationResponse,
+    RecommendationSkill,
+    RecommendationRole,
+    SkillsResponse,
+)
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -28,8 +35,8 @@ FAKE_RECOMMENDATIONS = [
             RecommendationSkill(skill="Pandas", status=True, skillGapPercent=None),
             RecommendationSkill(skill="PyTorch", status=True, skillGapPercent=None),
             RecommendationSkill(skill="TensorFlow", status=True, skillGapPercent=None),
-            RecommendationSkill(skill="Polars", status=False, skillGapPercent=40)
-        ]
+            RecommendationSkill(skill="Polars", status=False, skillGapPercent=40),
+        ],
     ),
     RecommendationRole(
         role="Python Developer",
@@ -39,9 +46,9 @@ FAKE_RECOMMENDATIONS = [
             RecommendationSkill(skill="Pandas", status=True, skillGapPercent=None),
             RecommendationSkill(skill="Flask", status=True, skillGapPercent=None),
             RecommendationSkill(skill="FastAPI", status=False, skillGapPercent=90),
-            RecommendationSkill(skill="SQL ALchemy", status=False, skillGapPercent=11)
-        ]
-    )
+            RecommendationSkill(skill="SQL ALchemy", status=False, skillGapPercent=11),
+        ],
+    ),
 ]
 
 FAKE_SKILLS = [
@@ -52,15 +59,10 @@ FAKE_SKILLS = [
     "postgreSQL",
     "polars",
     "TensorFlow",
-    "PyGame"
+    "PyGame",
 ]
 
-FAKE_CATEGORIES = [
-    "Backend",
-    "Data Science",
-    "Databases"
-]
-
+FAKE_CATEGORIES = ["Backend", "Data Science", "Databases"]
 
 
 # @app.get("/")
@@ -72,14 +74,17 @@ FAKE_CATEGORIES = [
 # def predict(request: PredictRequest):
 #     return PredictResponse(prediction=predict_job_role(request.skills, request.limit))
 
+
 @app.get("/available_skills", response_model=SkillsResponse)
 async def get_available_skills():
     return SkillsResponse(skills=FAKE_SKILLS)
+
 
 @app.post("/recommend", response_model=RecommendationResponse)
 async def get_recommendation(data: RecommendationRequest):
     # Tu można podpiąć prawdziwy model ML lub logikę
     return RecommendationResponse(recommendations=FAKE_RECOMMENDATIONS)
+
 
 @app.post("/suggest_category", response_model=CategoryResponse)
 async def suggest_category(data: CategoryRequest):
