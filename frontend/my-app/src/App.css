@@ -71,8 +71,8 @@
 button {
   white-space: nowrap;
   color: white;
-  background-color: #552EEE;
-  margin: 0 0.2em; 
+  background-color: #552eee;
+  margin: 0 0.2em;
   border-radius: 8px;
 }
 /* 
@@ -84,18 +84,16 @@ button:focus {
   background-color: #3C20AB;
 } */
 
-
-
 button {
   -webkit-filter: saturate(100%);
-  filter:saturate(100%);
+  filter: saturate(100%);
 }
 
 button:hover {
   -webkit-filter: saturate(150%);
   filter: saturate(150%);
 
-/* 
+  /* 
   -webkit-transition: all 1s ease;
   -moz-transition: all 1s ease;
   -o-transition: all 1s ease;
