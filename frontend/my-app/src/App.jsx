@@ -3,10 +3,16 @@ import './App.css'
 import PathSelection from './components/pathselection'
 import SkillsSelect from './components/SkillsSelect'
 import MatchResults from './components/MatchResults'
-
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 
 function App() {
+
+  const [state, setState] = useState({
+    open: false
+  });
+
 
   const [userSkills, setUserSkills] = useState()
   const [positionCateogries, setPositionCategories] = useState()
@@ -36,13 +42,16 @@ function App() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ skills: userSkills, category: selectedCategpory })
   };
-
     fetch('http://127.0.0.1:8000/recommend', requestOptions)
     .then(response => response.json())
     .then(json => setRecommendations(json.recommendations))
     .catch(error => console.error(error));
   }
 
+  const onRoleRecommentationLiked = (role) =>
+  {
+    setState({...state, open:true})
+  }
 
   useEffect(() => {
     fetch('http://127.0.0.1:8000/available_skills')
@@ -53,7 +62,21 @@ function App() {
 
 
   return (
-    <>    
+    <>
+      <Snackbar
+        anchorOrigin={{ vertical:'top', horizontal:'right' }}
+        open={open}
+        autoHideDuration={5000}
+        onClose={() => setState({...state, open: false})}
+      >
+        <Alert
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          Thank you for your feedback!
+        </Alert>
+    </Snackbar>    
       { skillsOptions && !userSkills && <div>
         <SkillsSelect skillsOptions={skillsOptions} onSkillsChange={onSkillsChange}></SkillsSelect>
       </div> }
@@ -63,7 +86,7 @@ function App() {
       </div> }
       
       {recommendations && <div>
-        <MatchResults roleRecommendations={recommendations}></MatchResults>
+        <MatchResults roleRecommendations={recommendations} onRoleRecommentationLiked={onRoleRecommentationLiked}></MatchResults>
       </div> }
     </>
   )

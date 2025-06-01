@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Accordion from '@mui/material/Accordion';
+import Button from '@mui/material/Button';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
@@ -8,15 +9,21 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 
 
+const createRolePanel = (role, onRoleRecommentationLiked) => {
 
-const createRolePanel = (role) => {
+
+    const [liked, setLiked] = useState(false);
+
     return (
         <div class="match_results" key={role.role}>
         <Accordion style={{borderRadius: 8,  color: "#474747"}}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
+          
           aria-controls="panel1-content"
           id="panel1-header"
           style={{ backgroundColor: calculateColor(role.matchPercent), 
@@ -27,10 +34,21 @@ const createRolePanel = (role) => {
           }}
 
         >
-          <Typography component="span" style={{fontWeight: 'bold'}} >{role.role}</Typography>
-          <Typography component="span" style={{margin: '0 0.5em', color:'gray'}} >({role.matchPercent}% match)</Typography>
+            <Typography component="span" style={{fontWeight: 'bold'}} >{role.role}</Typography>
+            <Typography component="span" style={{margin: '0 0.5em', color:'gray', flex: 1}} >({role.matchPercent}% match)</Typography>
+          
+            { liked 
+                ? <ThumbUpAltIcon
+                    onClick = {e => { e.stopPropagation(); } } />
+                : <ThumbUpOffAltIcon 
+                    onClick = {e => { onRoleRecommentationLiked(role); setLiked(true); e.stopPropagation() } }/>
 
+        
+        }  
+        
         </AccordionSummary>
+        
+
         <AccordionDetails>
             <ul>
           {createRoleSkills(role.skills)}
@@ -70,9 +88,8 @@ const calculateBorderColor = (matchPercent) => {
 }
 
 
-export default function MatchResults({roleRecommendations}) {
-    const roleRecommedationsPanels=roleRecommendations.map(createRolePanel
-    );
+export default function MatchResults({roleRecommendations, onRoleRecommentationLiked}) {
+    const roleRecommedationsPanels=roleRecommendations.map(role => createRolePanel(role, onRoleRecommentationLiked));
 
     return (
         <>
