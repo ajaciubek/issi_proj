@@ -55,6 +55,9 @@ function App() {
 
   return (
     <>
+      <div className="logo-container">
+        <img src="logo.svg" alt="Logo" className="logo" />
+      </div>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={feedbackPopupOpen}

@@ -3,28 +3,7 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  margin-bottom: 10em;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -75,14 +54,6 @@ button {
   margin: 0 0.2em;
   border-radius: 8px;
 }
-/* 
-button:hover {
-  background-color: #3C20AB;
-}
-
-button:focus {
-  background-color: #3C20AB;
-} */
 
 button {
   -webkit-filter: saturate(100%);
@@ -92,11 +63,15 @@ button {
 button:hover {
   -webkit-filter: saturate(150%);
   filter: saturate(150%);
+}
 
-  /* 
-  -webkit-transition: all 1s ease;
-  -moz-transition: all 1s ease;
-  -o-transition: all 1s ease;
-  -ms-transition: all 1s ease;
-  transition: all 1s ease; */
+.logo-container {
+  text-align: center; 
+  margin-top: 0; 
+  margin-bottom: 5em;
+}
+
+.logo {
+  max-width: 150px; 
+  height: auto; 
 }
