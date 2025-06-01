@@ -14,14 +14,20 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 const createRolePanel = (role) => {
     return (
         <div class="match_results" key={role.role}>
-        <Accordion >
+        <Accordion style={{borderRadius: 8,  color: "#474747"}}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
           id="panel1-header"
-          style={{ backgroundColor: calculateColor(role.matchPercent) }}
+          style={{ backgroundColor: calculateColor(role.matchPercent), 
+            borderRadius: 8, 
+            border: `1px solid ${calculateBorderColor(role.matchPercent)}`,
+            outline: 'none',
+            
+          }}
+
         >
-          <Typography component="span" >{role.role}</Typography>
+          <Typography component="span" style={{fontWeight: 'bold'}} >{role.role}</Typography>
           <Typography component="span" style={{margin: '0 0.5em', color:'gray'}} >({role.matchPercent}% match)</Typography>
 
         </AccordionSummary>
@@ -53,6 +59,14 @@ const calculateColor = (matchPercent) => {
     if (matchPercent >= 66) return "#FFF1AA";
     if (matchPercent >= 51) return "#FFD39A";
     return "#FFBBBB";
+}
+
+const calculateBorderColor = (matchPercent) => {
+    if (matchPercent >= 91) return "#13D671";
+    if (matchPercent >= 76) return "#59C307";
+    if (matchPercent >= 66) return "#FFBF00";
+    if (matchPercent >= 51) return "#EE8E11";
+    return "#E30000";
 }
 
 

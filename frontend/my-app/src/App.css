@@ -1,5 +1,5 @@
 #root {
-  max-width: 980px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -66,4 +66,39 @@
 .match_results .gap {
   text-align: right;
   flex: 1; /* Keeps the gap content compact */
+}
+
+button {
+  white-space: nowrap;
+  color: white;
+  background-color: #552EEE;
+  margin: 0 0.2em; 
+  border-radius: 8px;
+}
+/* 
+button:hover {
+  background-color: #3C20AB;
+}
+
+button:focus {
+  background-color: #3C20AB;
+} */
+
+
+
+button {
+  -webkit-filter: saturate(100%);
+  filter:saturate(100%);
+}
+
+button:hover {
+  -webkit-filter: saturate(150%);
+  filter: saturate(150%);
+
+/* 
+  -webkit-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  -ms-transition: all 1s ease;
+  transition: all 1s ease; */
 }

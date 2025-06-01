@@ -52,8 +52,18 @@ export default function SkillsSelect({skillsOptions, onSkillsChange}) {
                         placeholder: (provided) => ({
                             ...provided,
                             textAlign: 'left',
-                        }),
+                        })
                     }}
+                    theme={(theme) => ({
+                        ...theme,
+                        borderRadius: 8,
+                        colors: {
+                          ...theme.colors,
+                          primary25: '#E8E3FF',
+                          primary: '#552EEE',
+                        },
+                      })}
+
                 />
                 <button  onClick={onSubmit}>Show directions</button>
             </div>
