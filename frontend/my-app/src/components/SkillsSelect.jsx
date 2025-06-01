@@ -10,8 +10,7 @@ export default function SkillsSelect({skillsOptions, onSkillsChange}) {
     const [selection, setSelection] = useState([])
     const [displayWarning, setDisplayWarning] = useState(false)
     const onChange = (
-        newValue,
-        actionMeta
+        newValue
       ) => {
         setSelection(newValue)
       }

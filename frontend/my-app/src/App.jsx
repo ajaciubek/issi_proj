@@ -46,7 +46,7 @@ function App() {
     .catch(error => console.error(error));
   }
 
-  const onRoleRecommentationLiked = (role) =>
+  const onRoleRecommentationLiked = () =>
   {
     setFeedbackPopupOpen(true)
   }
