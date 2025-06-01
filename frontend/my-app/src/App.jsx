@@ -9,9 +9,7 @@ import Alert from '@mui/material/Alert';
 
 function App() {
 
-  const [state, setState] = useState({
-    open: false
-  });
+  const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false);
 
 
   const [userSkills, setUserSkills] = useState()
@@ -50,7 +48,7 @@ function App() {
 
   const onRoleRecommentationLiked = (role) =>
   {
-    setState({...state, open:true})
+    setFeedbackPopupOpen(true)
   }
 
   useEffect(() => {
@@ -65,9 +63,9 @@ function App() {
     <>
       <Snackbar
         anchorOrigin={{ vertical:'top', horizontal:'right' }}
-        open={open}
+        open={feedbackPopupOpen}
         autoHideDuration={5000}
-        onClose={() => setState({...state, open: false})}
+        onClose={() => setFeedbackPopupOpen(false)}
       >
         <Alert
           severity="success"
