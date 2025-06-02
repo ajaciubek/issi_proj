@@ -1,3 +1,4 @@
+import json
 from fastapi import FastAPI
 from api.model import (
     RecommendationRequest,
@@ -49,17 +50,6 @@ FAKE_RECOMMENDATIONS = [
     ),
 ]
 
-FAKE_SKILLS = [
-    "python",
-    "api",
-    "pandas",
-    "pyTorch",
-    "postgreSQL",
-    "polars",
-    "TensorFlow",
-    "PyGame",
-]
-
 
 # @app.get("/")
 # def root():
@@ -73,7 +63,9 @@ FAKE_SKILLS = [
 
 @app.get("/available_skills", response_model=SkillsResponse)
 async def get_available_skills():
-    return SkillsResponse(skills=FAKE_SKILLS)
+    with open("data/programming_skills.json", "r") as file:
+        data = json.load(file)
+        return SkillsResponse(skills=data["Skills"])
 
 
 @app.post("/recommend", response_model=RecommendationResponse)
