@@ -13,7 +13,6 @@ from typing import List, Optional
 
 class RecommendationRequest(BaseModel):
     skills: List[str] = Field(..., min_items=4)
-    category: str = None
 
 
 class RecommendationSkill(BaseModel):
@@ -34,11 +33,3 @@ class RecommendationResponse(BaseModel):
 
 class SkillsResponse(BaseModel):
     skills: List[str]
-
-
-class CategoryRequest(BaseModel):
-    skills: List[str] = Field(..., min_items=4)
-
-
-class CategoryResponse(BaseModel):
-    categories: List[str]

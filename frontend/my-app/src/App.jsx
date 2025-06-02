@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import PathSelection from "./components/pathselection";
 import SkillsSelect from "./components/SkillsSelect";
 import MatchResults from "./components/MatchResults";
 import Snackbar from "@mui/material/Snackbar";
@@ -10,7 +9,6 @@ function App() {
   const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false);
 
   const [userSkills, setUserSkills] = useState();
-  const [positionCateogries, setPositionCategories] = useState();
 
   const [skillsOptions, setSkillOptions] = useState();
 
@@ -23,24 +21,13 @@ function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ skills: selectedSkills }),
     };
-
-    fetch("http://127.0.0.1:8000/suggest_category", requestOptions)
-      .then((response) => response.json())
-      .then((json) => setPositionCategories(json.categories))
-      .catch((error) => console.error(error));
-  };
-
-  const onCategorySelected = (selectedCategpory) => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ skills: userSkills, category: selectedCategpory }),
-    };
+    
     fetch("http://127.0.0.1:8000/recommend", requestOptions)
       .then((response) => response.json())
       .then((json) => setRecommendations(json.recommendations))
       .catch((error) => console.error(error));
   };
+
 
   const onRoleRecommentationLiked = () => {
     setFeedbackPopupOpen(true);
@@ -77,15 +64,6 @@ function App() {
         </div>
       )}
 
-      {positionCateogries && !recommendations && (
-        <div>
-          <PathSelection
-            userSkills={userSkills}
-            positionCateogries={positionCateogries}
-            onCategorySelected={onCategorySelected}
-          ></PathSelection>
-        </div>
-      )}
 
       {recommendations && (
         <div>

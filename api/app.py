@@ -1,7 +1,5 @@
 from fastapi import FastAPI
 from api.model import (
-    CategoryRequest,
-    CategoryResponse,
     RecommendationRequest,
     RecommendationResponse,
     RecommendationSkill,
@@ -62,8 +60,6 @@ FAKE_SKILLS = [
     "PyGame",
 ]
 
-FAKE_CATEGORIES = ["Backend", "Data Science", "Databases"]
-
 
 # @app.get("/")
 # def root():
@@ -84,9 +80,3 @@ async def get_available_skills():
 async def get_recommendation(data: RecommendationRequest):
     # Tu można podpiąć prawdziwy model ML lub logikę
     return RecommendationResponse(recommendations=FAKE_RECOMMENDATIONS)
-
-
-@app.post("/suggest_category", response_model=CategoryResponse)
-async def suggest_category(data: CategoryRequest):
-    # Mock logic: return top 3 matching categories
-    return CategoryResponse(categories=FAKE_CATEGORIES[:3])
