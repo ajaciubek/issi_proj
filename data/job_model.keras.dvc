@@ -1,5 +1,5 @@
 outs:
-- md5: ce88b2bba3352b9016f946b40bf58b3f
-  size: 3142500
+- md5: 9cbb5c22d47568dd9b287b190b686c63
+  size: 3145620
   hash: md5
   path: job_model.keras

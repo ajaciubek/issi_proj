@@ -44,7 +44,7 @@ def get_skills(text: str) -> Optional[str]:
         return None
     doc = nlp(text)
     skills = {ent.text.lower() for ent in doc.ents if ent.label_ == "TECH_STACK"}
-    if len(skills) <= 3:
+    if len(skills) <= 6:
         return None
     return ",".join(sorted(skills))
 
@@ -167,8 +167,8 @@ while offset < length:
             f"./data/batches/pre_processed_data_{offset}.parquet", compression="zstd"
         )
 
-    print(f"Processed {offset} records.")
     offset += batch_size
+    print(f"Processed {offset} / {length}")
 
 df = combine_batches()
 
