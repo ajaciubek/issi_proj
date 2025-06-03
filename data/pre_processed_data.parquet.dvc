@@ -1,5 +1,5 @@
 outs:
-- md5: 413d8157024d25a2366e4ce4758af9de
-  size: 100071744
+- md5: daf7fbd69a1a33bc304fde67f19e7f5a
+  size: 49122313
   hash: md5
   path: pre_processed_data.parquet
