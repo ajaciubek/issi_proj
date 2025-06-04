@@ -1,0 +1,77 @@
+#root {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 10em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.match_results {
+  padding: 0.3em 0;
+}
+
+.match_results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.match_results li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5em 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.match_results .name {
+  text-align: left;
+  flex: 1; /* Takes up remaining space */
+}
+
+.match_results .gap {
+  text-align: right;
+  flex: 1; /* Keeps the gap content compact */
+}
+
+button {
+  white-space: nowrap;
+  color: white;
+  background-color: #552eee;
+  margin: 0 0.2em;
+  border-radius: 8px;
+}
+
+button {
+  -webkit-filter: saturate(100%);
+  filter: saturate(100%);
+}
+
+button:hover {
+  -webkit-filter: saturate(150%);
+  filter: saturate(150%);
+}
+
+.logo-container {
+  text-align: center; 
+  margin-top: 0; 
+  margin-bottom: 5em;
+}
+
+.logo {
+  max-width: 150px; 
+  height: auto; 
+}
