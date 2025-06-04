@@ -8,8 +8,8 @@ from typing import List, Optional
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import LabelEncoder
 import joblib
-import glob
 from pathlib import Path
+import os
 
 
 def load_data_from_json(data_type: str) -> List[str]:
@@ -44,7 +44,7 @@ def get_skills(text: str) -> Optional[str]:
         return None
     doc = nlp(text)
     skills = {ent.text.lower() for ent in doc.ents if ent.label_ == "TECH_STACK"}
-    if len(skills) <= 6:
+    if len(skills) <= 7:
         return None
     return ",".join(sorted(skills))
 
@@ -136,18 +136,6 @@ def pre_process_df(df: pl.DataFrame, encoder: LabelEncoder) -> pl.DataFrame:
     return df
 
 
-def combine_batches() -> pl.DataFrame:
-    files = glob.glob("./data/batches/*.parquet")
-    dfs = []
-
-    for file in files:
-        df = pl.read_parquet(file)
-        dfs.append(df)
-
-    combined_df = pl.concat(dfs)
-    return combined_df
-
-
 batch_size = 200
 offset = 0
 
@@ -157,22 +145,26 @@ joblib.dump(label_encoder, Path(settings.LABEL_MODEL_PATH))
 
 df = pl.scan_parquet("./data/raw_data.parquet")
 length = df.select(pl.len()).collect().item()
+file_name = None
+file_name_prev = None
+combined_df = pl.DataFrame()
 
 while offset < length:
     batch = df.slice(offset, batch_size)
 
     batch = pre_process_df(batch, label_encoder)
-    if not batch.is_empty():
-        batch.write_parquet(
-            f"./data/batches/pre_processed_data_{offset}.parquet", compression="zstd"
-        )
-
     offset += batch_size
+
+    if not batch.is_empty():
+        combined_df = pl.concat([combined_df, batch])
+        file_name = f"./data/pre_processed_data_{offset}"
+
+        if file_name_prev:
+            os.rename(f"{file_name_prev}.parquet", f"{file_name}.parquet")
+
+        combined_df.write_parquet(f"{file_name}.parquet", compression="zstd")
+        file_name_prev = file_name
+
     print(f"Processed {offset} / {length}")
 
-df = combine_batches()
-
-df.write_parquet(
-    "./data/pre_processed_data.parquet",
-    compression="zstd",
-)
+os.rename(f"{file_name}.parquet", "./data/pre_processed_data.parquet")
