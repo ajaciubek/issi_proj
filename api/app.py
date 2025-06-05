@@ -29,7 +29,6 @@ app.add_middleware(
 )
 
 
-
 @app.get("/")
 async def main():
     return {"message": "Welcome to the Job Role Recommendation API"}
@@ -43,11 +42,9 @@ async def get_available_skills():
         for segment in data["Job Segments"].values():
             skills.update(segment["Skills"])
 
-        # Convert to a sorted list
         distinct_skills = sorted(skills)
 
         return SkillsResponse(skills=distinct_skills)
-
 
 
 @app.post("/recommend", response_model=RecommendationResponse)
@@ -56,8 +53,8 @@ async def get_recommendation(request: RecommendationRequest):
     recommendations = [
         RecommendationRole(
             role=role,
-            matchPercent = int(probability * 100),
-            skills = build_recomendation_skill_for_role(role, request.skills)
+            matchPercent=int(probability * 100),
+            skills=build_recomendation_skill_for_role(role, request.skills),
         )
         for role, probability in prediction
     ]
@@ -74,9 +71,9 @@ def build_recomendation_skill_for_role(role, user_skills):
         if role in segment.get("Roles", []):
             for skill_name in segment.get("Skills", []):
                 status = skill_name in user_skills
-                resommendation_skill = RecommendationSkill(skill=skill_name, status=status, skillGapPercent=None)
+                resommendation_skill = RecommendationSkill(
+                    skill=skill_name, status=status, skillGapPercent=None
+                )
                 resommendation_skills.append(resommendation_skill)
-                
+
     return sorted(resommendation_skills, key=lambda skill: not skill.status)[:10]
-
-
