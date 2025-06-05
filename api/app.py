@@ -10,7 +10,8 @@ from api.model import (
 from fastapi.middleware.cors import CORSMiddleware
 from ml.predictor import predict_job_role
 
-PREDICTIONS_PER_REQUEST = 3
+PREDICTIONS_PER_REQUEST = 5
+METADATA_PATH = "data/metadata.json"
 
 app = FastAPI()
 
@@ -27,30 +28,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-FAKE_RECOMMENDATIONS = [
-    RecommendationRole(
-        role="Machine Learning Engineer",
-        matchPercent=98,
-        skills=[
-            RecommendationSkill(skill="Python", status=True, skillGapPercent=None),
-            RecommendationSkill(skill="Pandas", status=True, skillGapPercent=None),
-            RecommendationSkill(skill="PyTorch", status=True, skillGapPercent=None),
-            RecommendationSkill(skill="TensorFlow", status=True, skillGapPercent=None),
-            RecommendationSkill(skill="Polars", status=False, skillGapPercent=40),
-        ],
-    ),
-    RecommendationRole(
-        role="Python Developer",
-        matchPercent=69,
-        skills=[
-            RecommendationSkill(skill="Python", status=True, skillGapPercent=None),
-            RecommendationSkill(skill="Pandas", status=True, skillGapPercent=None),
-            RecommendationSkill(skill="Flask", status=True, skillGapPercent=None),
-            RecommendationSkill(skill="FastAPI", status=False, skillGapPercent=90),
-            RecommendationSkill(skill="SQL ALchemy", status=False, skillGapPercent=11),
-        ],
-    ),
-]
 
 
 @app.get("/")
@@ -60,9 +37,17 @@ async def main():
 
 @app.get("/available_skills", response_model=SkillsResponse)
 async def get_available_skills():
-    with open("data/programming_skills.json", "r") as file:
+    with open(METADATA_PATH, "r") as file:
         data = json.load(file)
-        return SkillsResponse(skills=data["Skills"])
+        skills = set()
+        for segment in data["Job Segments"].values():
+            skills.update(segment["Skills"])
+
+        # Convert to a sorted list
+        distinct_skills = sorted(skills)
+
+        return SkillsResponse(skills=distinct_skills)
+
 
 
 @app.post("/recommend", response_model=RecommendationResponse)
@@ -71,9 +56,27 @@ async def get_recommendation(request: RecommendationRequest):
     recommendations = [
         RecommendationRole(
             role=role,
-            matchPercent=int(probability),
-            skills=[RecommendationSkill(skill="", status=True, skillGapPercent=None)],
+            matchPercent = int(probability * 100),
+            skills = build_recomendation_skill_for_role(role, request.skills)
         )
         for role, probability in prediction
     ]
     return RecommendationResponse(recommendations=recommendations)
+
+
+def build_recomendation_skill_for_role(role, user_skills):
+    with open(METADATA_PATH, "r") as file:
+        data = json.load(file)
+
+    resommendation_skills = []
+
+    for segment in data["Job Segments"].values():
+        if role in segment.get("Roles", []):
+            for skill_name in segment.get("Skills", []):
+                status = skill_name in user_skills
+                resommendation_skill = RecommendationSkill(skill=skill_name, status=status, skillGapPercent=None)
+                resommendation_skills.append(resommendation_skill)
+                
+    return sorted(resommendation_skills, key=lambda skill: not skill.status)[:10]
+
+
