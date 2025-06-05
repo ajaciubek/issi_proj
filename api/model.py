@@ -2,17 +2,8 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 
 
-# class PredictRequest(BaseModel):
-#     skills: List[str] = Field(..., min_items=4)
-#     limit: int = Field(..., gt=0)
-
-
-# class PredictResponse(BaseModel):
-#     prediction: List[Tuple[str, float]]
-
-
 class RecommendationRequest(BaseModel):
-    skills: List[str] = Field(..., min_items=4)
+    skills: List[str] = Field(..., min_items=1)
 
 
 class RecommendationSkill(BaseModel):
@@ -23,7 +14,7 @@ class RecommendationSkill(BaseModel):
 
 class RecommendationRole(BaseModel):
     role: str
-    matchPercent: int
+    matchPercent: float
     skills: List[RecommendationSkill]
 
 

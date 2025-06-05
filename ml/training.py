@@ -38,7 +38,7 @@ model = keras.Sequential(
         layers.Dropout(0.3),
         layers.Dense(64, activation="relu"),
         layers.Dropout(0.2),
-        layers.Dense(num_classes, activation="softmax"),
+        layers.Dense(num_classes, activation="sigmoid"),
     ]
 )
 
