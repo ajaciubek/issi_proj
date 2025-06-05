@@ -8,7 +8,9 @@ from api.model import (
     SkillsResponse,
 )
 from fastapi.middleware.cors import CORSMiddleware
+from ml.predictor import predict_job_role
 
+PREDICTIONS_PER_REQUEST = 3
 
 app = FastAPI()
 
@@ -51,14 +53,9 @@ FAKE_RECOMMENDATIONS = [
 ]
 
 
-# @app.get("/")
-# def root():
-#     return "Welcome to the Job Role Prediction API!"
-
-
-# @app.post("/predict", response_model=PredictResponse)
-# def predict(request: PredictRequest):
-#     return PredictResponse(prediction=predict_job_role(request.skills, request.limit))
+@app.get("/")
+async def main():
+    return {"message": "Welcome to the Job Role Recommendation API"}
 
 
 @app.get("/available_skills", response_model=SkillsResponse)
@@ -69,6 +66,14 @@ async def get_available_skills():
 
 
 @app.post("/recommend", response_model=RecommendationResponse)
-async def get_recommendation(data: RecommendationRequest):
-    # Tu można podpiąć prawdziwy model ML lub logikę
-    return RecommendationResponse(recommendations=FAKE_RECOMMENDATIONS)
+async def get_recommendation(request: RecommendationRequest):
+    prediction = predict_job_role(request.skills, PREDICTIONS_PER_REQUEST)
+    recommendations = [
+        RecommendationRole(
+            role=role,
+            matchPercent=int(probability),
+            skills=[RecommendationSkill(skill="", status=True, skillGapPercent=None)],
+        )
+        for role, probability in prediction
+    ]
+    return RecommendationResponse(recommendations=recommendations)
