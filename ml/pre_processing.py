@@ -11,6 +11,8 @@ import joblib
 from pathlib import Path
 import os
 
+BATCH_SIZE = 200
+
 
 def load_data_from_json(data_type: str) -> List[str]:
     with open("./data/metadata.json", "r", encoding="utf-8") as file:
@@ -25,7 +27,7 @@ def load_data_from_json(data_type: str) -> List[str]:
 
 load_dotenv(dotenv_path="./config/.ml-env")
 settings = Settings()
-nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load(settings.SPACY_MODEL)
 gemini_client = genai.Client(api_key=settings.GEMINI_KEY)
 model = SentenceTransformer(settings.SENTENCE_TRANSFORMER_MODEL)
 
@@ -136,7 +138,6 @@ def pre_process_df(df: pl.DataFrame, encoder: LabelEncoder) -> pl.DataFrame:
     return df
 
 
-batch_size = 200
 offset = 0
 
 label_encoder = LabelEncoder()
@@ -150,10 +151,10 @@ file_name_prev = None
 combined_df = pl.DataFrame()
 
 while offset < length:
-    batch = df.slice(offset, batch_size)
+    batch = df.slice(offset, BATCH_SIZE)
 
     batch = pre_process_df(batch, label_encoder)
-    offset += batch_size
+    offset += BATCH_SIZE
 
     if not batch.is_empty():
         combined_df = pl.concat([combined_df, batch])
