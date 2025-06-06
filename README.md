@@ -25,4 +25,7 @@ uv pip install https://github.com/explosion/spacy-models/releases/download/en_co
 2. dvc pull
 3. uv run uvicorn api.app:app
 
-## 
+## Starting application UI:
+1. cd frontend/my-app
+2. npm install
+3. npm run dev
