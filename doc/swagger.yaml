@@ -45,26 +45,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/SkillsResponse'
                 
-  /suggest_category:
-    post:
-      summary: 'Returns a category list'
-      description: 'A list of matching high-level categories based on user skills i.e. Backend, DevOps, Data Analysis'
-      operationId: 'suggestCategory'
-      requestBody:
-        description: 'Information about user skills'
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CategoryRequest'
-        required: true
-        
-      responses:
-        '200':
-          description: 'Successful operation'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryResponse'
 
 components:
   schemas:
@@ -133,24 +113,4 @@ components:
             type: string
             example: 'Python'
           
-    CategoryRequest:
-      type: object
-      description: 'Selected user skillset'
-      properties:
-        skills:
-          type: array
-          items: 
-            type: string
-            example: 'Python'    
-      
-    CategoryResponse:
-      type: object
-      description: 'A list of max 3 categories based on highest probability'
-      properties:
-        categories:
-          type: array
-          items: 
-            type: string
-            example: 'Backend' 
-    
     

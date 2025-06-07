@@ -43,7 +43,9 @@ function App() {
   return (
     <>
       <div className="logo-container">
-        <img src="logo.svg" alt="Logo" className="logo" />
+        <a href = "/">
+          <img src="logo.svg" alt="Logo" className="logo" />
+        </a>
       </div>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
