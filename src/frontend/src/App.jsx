@@ -14,6 +14,8 @@ function App() {
 
   const [recommendations, setRecommendations] = useState();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const onSkillsChange = (selectedSkills) => {
     setUserSkills(selectedSkills);
     const requestOptions = {
@@ -21,10 +23,13 @@ function App() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ skills: selectedSkills }),
     };
-    
+
+    setIsLoading(true);   
+
     fetch("http://127.0.0.1:8000/recommend", requestOptions)
       .then((response) => response.json())
       .then((json) => setRecommendations(json.recommendations))
+      .then(() => setIsLoading(false))
       .catch((error) => console.error(error));
   };
 
@@ -57,6 +62,7 @@ function App() {
           Thank you for your feedback!
         </Alert>
       </Snackbar>
+
       {skillsOptions && !userSkills && (
         <div>
           <SkillsSelect
@@ -66,7 +72,6 @@ function App() {
         </div>
       )}
 
-
       {recommendations && (
         <div>
           <MatchResults
@@ -75,6 +80,9 @@ function App() {
           ></MatchResults>
         </div>
       )}
+
+      {isLoading && (<div className="loader"></div>)}
+
     </>
   );
 }
