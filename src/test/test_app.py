@@ -1,13 +1,12 @@
-from fastapi.testclient import TestClient
-from .app import app
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from .model import (
-    RecommendationRequest,
-    RecommendationResponse,
-    RecommendationSkill,
-    RecommendationRole,
-    SkillsResponse,
-)
+
+
+from fastapi.testclient import TestClient
+from api.app import app
+
 
 client = TestClient(app)
 
