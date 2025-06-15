@@ -1,6 +1,6 @@
 import json
 from fastapi import FastAPI
-from api.model import (
+from .model import (
     RecommendationRequest,
     RecommendationResponse,
     RecommendationSkill,
@@ -8,7 +8,7 @@ from api.model import (
     SkillsResponse,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from ml.predictor import predict_job_role
+from ..ml.predictor import predict_job_role
 
 PREDICTIONS_PER_REQUEST = 5
 METADATA_PATH = "data/metadata.json"
