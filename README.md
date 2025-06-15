@@ -26,6 +26,10 @@ uv pip install https://github.com/explosion/spacy-models/releases/download/en_co
 3. cd src
 4. uv run uvicorn api.app:app
 
+### Application service tests
+1. cd src
+2. pytest test/test_app.py
+
 ## Starting application UI:
 1. uv run nodeenv .nenv
 2. source .nenv/bin/activate

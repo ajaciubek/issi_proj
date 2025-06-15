@@ -1,6 +1,6 @@
 import json
 from fastapi import FastAPI
-from api.model import (
+from .model import (
     RecommendationRequest,
     RecommendationResponse,
     RecommendationSkill,
