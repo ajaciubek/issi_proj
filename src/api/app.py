@@ -8,7 +8,7 @@ from .model import (
     SkillsResponse,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from ml.predictor import predict_job_role
+from src.ml.predictor import predict_job_role
 
 PREDICTIONS_PER_REQUEST = 5
 METADATA_PATH = "data/metadata.json"

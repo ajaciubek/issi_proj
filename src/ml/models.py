@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic import BaseModel
 
 
 class Settings(BaseSettings):
@@ -7,3 +8,7 @@ class Settings(BaseSettings):
     SENTENCE_TRANSFORMER_MODEL: str
     GEMINI_KEY: str
     SPACY_MODEL: str
+
+
+class LlmOutput(BaseModel):
+    role: str

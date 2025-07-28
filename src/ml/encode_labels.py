@@ -3,7 +3,7 @@ import joblib
 from pathlib import Path
 import json
 from typing import List
-from settings import Settings
+from models import Settings
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path="./config/.ml-env")

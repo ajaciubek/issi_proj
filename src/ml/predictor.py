@@ -3,7 +3,7 @@ from tensorflow.keras.models import load_model
 import numpy as np
 import joblib
 from dotenv import load_dotenv
-from .settings import Settings
+from .models import Settings
 from typing import List
 
 load_dotenv(dotenv_path="./config/.ml-env")

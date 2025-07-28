@@ -4,7 +4,7 @@ import joblib
 from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 import polars as pl
-from settings import Settings
+from models import Settings
 from dotenv import load_dotenv
 import numpy as np
 from sklearn.metrics import classification_report
