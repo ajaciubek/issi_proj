@@ -5,14 +5,13 @@ from typing import Optional, List
 from google.genai.types import GenerateContentConfig
 
 load_dotenv(dotenv_path="./config/.ml-env")
-settings = Settings()
-
-gemini_client = genai.Client(api_key=settings.GEMINI_KEY)
+GEMINI_CLIENT = genai.Client(api_key=Settings().GEMINI_KEY)
 
 
 def generate_llm_response(
     position: str, description: str, skills: str, roles: List[str]
 ) -> Optional[LlmOutput]:
+    global GEMINI_CLIENT
     prompt = f"""
     Classify the job into one of the roles:
     Position: {position}
@@ -20,7 +19,7 @@ def generate_llm_response(
     Skills: {skills}
     """
     try:
-        response = gemini_client.models.generate_content(
+        response = GEMINI_CLIENT.models.generate_content(
             model="gemini-2.0-flash",
             contents=prompt,
             config=GenerateContentConfig(
