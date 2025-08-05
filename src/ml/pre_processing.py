@@ -118,7 +118,6 @@ def pre_process_skill(
             for i in encoded:
                 skills_vec[0][i] = 1
             all_skills_vec = np.append(all_skills_vec, skills_vec, axis=0)
-
         skills_df = pl.DataFrame(
             all_skills_vec, schema=[f"skill_{i}" for i in range(len(all_skills_vec[0]))]
         )
