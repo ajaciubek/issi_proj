@@ -8,8 +8,10 @@ from models import Settings
 from dotenv import load_dotenv
 import numpy as np
 from sklearn.metrics import classification_report
+from tensorflow.keras.metrics import AUC
 
 load_dotenv(dotenv_path="./config/.ml-env")
+settings = Settings()
 
 
 def train_role_model():
@@ -18,10 +20,10 @@ def train_role_model():
     y = df.select("Role_encoded")
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
+        X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    label_encoder = joblib.load(Settings().LABEL_MODEL_PATH)
+    label_encoder = joblib.load(settings.LABEL_MODEL_PATH)
     num_classes = len(label_encoder.classes_)
 
     model = keras.Sequential(
@@ -63,27 +65,56 @@ def train_role_model():
     model.save("./data/job_model.keras")
 
 
-# def train_skills_model():
-#     df = pl.read_parquet("./data/pre_processed_skills_data.parquet")
+def train_skills_model():
+    df = pl.read_parquet("./data/pre_processed_skills_data.parquet")
 
-#     X = df.drop("Skills")
-#     y = df.select("Skills")
+    X = df.select("Role_encoded")
+    y = df.drop("Role_encoded")
 
-#     skills_encoder = joblib.load("./data/skill_label_encoder.pkl")
+    skills_encoder = joblib.load(settings.SKILLS_MODEL_PATH)
+    num_skills_classes = len(skills_encoder.classes_)
 
-#     for z in y:
-#         skills_vec = np.zeros(len(skills_encoder.classes_))
-#         print(f"{z}")
-# print(f"{skill} {skills_encoder.transform([skill.strip()])[0]}")
+    num_role_classes = len(joblib.load(settings.LABEL_MODEL_PATH).classes_)
+    X = keras.utils.to_categorical(X, num_classes=num_role_classes)
 
-# X_train, X_test, y_train, y_test = train_test_split(
-#     X, y, test_size=0.2, random_state=42
-# )
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-# print(X_train)
-# print(y_train)
+    model = keras.Sequential(
+        [
+            layers.Input(shape=(num_role_classes,)),
+            layers.Dense(128, activation="relu"),
+            layers.Dropout(0.3),
+            layers.Dense(256, activation="relu"),
+            layers.Dropout(0.3),
+            layers.Dense(128, activation="relu"),
+            layers.Dropout(0.3),
+            layers.Dense(num_skills_classes, activation="sigmoid"),
+        ]
+    )
+
+    model.compile(
+        optimizer="adam",
+        loss="binary_crossentropy",
+        metrics=[AUC(name="auc"), "binary_accuracy"],
+    )
+
+    early_stop = EarlyStopping(
+        monitor="val_loss", patience=5, restore_best_weights=True
+    )
+
+    model.fit(
+        X_train,
+        y_train,
+        epochs=200,
+        batch_size=64,
+        validation_data=(X_test, y_test),
+        callbacks=[early_stop],
+        verbose=1,
+    )
 
 
 if __name__ == "__main__":
-    train_role_model()
-    # train_skills_model()
+    # train_role_model()
+    train_skills_model()

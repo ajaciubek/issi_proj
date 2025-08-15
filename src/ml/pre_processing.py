@@ -141,6 +141,7 @@ def combine_df(
             os.rename(f"{file_name_prev}.parquet", f"{file_name}.parquet")
 
         combined_df.write_parquet(f"{file_name}.parquet", compression="zstd")
+        print(combined_df)
         file_name_prev = file_name
     return (combined_df, file_name, file_name_prev)
 
