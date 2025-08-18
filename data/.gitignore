@@ -3,3 +3,4 @@
 /role_label_encoder.pkl
 /metadata.json
 /pre_processed_data.parquet
+/skills_model.keras

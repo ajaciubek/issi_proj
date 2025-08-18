@@ -1,0 +1,5 @@
+outs:
+- md5: d285d4b9c2bb5d37609498058888eaae
+  size: 1134340
+  hash: md5
+  path: skills_model.keras
