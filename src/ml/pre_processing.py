@@ -141,7 +141,6 @@ def combine_df(
             os.rename(f"{file_name_prev}.parquet", f"{file_name}.parquet")
 
         combined_df.write_parquet(f"{file_name}.parquet", compression="zstd")
-        print(combined_df)
         file_name_prev = file_name
     return (combined_df, file_name, file_name_prev)
 
@@ -174,8 +173,7 @@ def main():
     joblib.dump(label_encoder, Path(SETTINGS.LABEL_MODEL_PATH))
 
     df = pl.scan_parquet("./data/raw_data.parquet")
-    # length = df.select(pl.len()).collect().item()
-    length = 50
+    length = df.select(pl.len()).collect().item()
 
     role_file_name = None
     role_file_name_prev = None

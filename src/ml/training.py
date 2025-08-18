@@ -16,6 +16,7 @@ settings = Settings()
 
 def train_role_model():
     df = pl.read_parquet("./data/pre_processed_data.parquet")
+
     X = df.drop("Role_encoded")
     y = df.select("Role_encoded")
 
@@ -114,7 +115,9 @@ def train_skills_model():
         verbose=1,
     )
 
+    model.save("./data/skills_model.keras")
+
 
 if __name__ == "__main__":
-    # train_role_model()
+    train_role_model()
     train_skills_model()
