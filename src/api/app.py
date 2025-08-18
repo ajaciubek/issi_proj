@@ -8,7 +8,7 @@ from .model import (
     SkillsResponse,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from ml.predictor import predict_job_role
+from src.ml.predictor import predict_job_role, predict_skills_for_role
 
 PREDICTIONS_PER_REQUEST = 5
 METADATA_PATH = "data/metadata.json"
@@ -62,18 +62,21 @@ async def get_recommendation(request: RecommendationRequest):
 
 
 def build_recomendation_skill_for_role(role, user_skills):
-    with open(METADATA_PATH, "r") as file:
-        data = json.load(file)
+    number_of_skills = 5
 
-    resommendation_skills = []
+    user_skills_lower = {skill.lower() for skill in user_skills}
 
-    for segment in data["Job Segments"].values():
-        if role in segment.get("Roles", []):
-            for skill_name in segment.get("Skills", []):
-                status = skill_name in user_skills
-                resommendation_skill = RecommendationSkill(
-                    skill=skill_name, status=status, skillGapPercent=None
-                )
-                resommendation_skills.append(resommendation_skill)
+    skills = predict_skills_for_role(role, number_of_skills)
 
-    return sorted(resommendation_skills, key=lambda skill: not skill.status)[:10]
+    resommendation_skills = [
+        RecommendationSkill(
+            skill=skill_name,
+            status=skill_name.lower() in user_skills_lower,
+            skillGapPercent=None,
+        )
+        for skill_name in skills
+    ]
+
+    return sorted(resommendation_skills, key=lambda skill: not skill.status)[
+        :number_of_skills
+    ]

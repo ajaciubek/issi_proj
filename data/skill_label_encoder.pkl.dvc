@@ -1,0 +1,5 @@
+outs:
+- md5: 4ea4a234a75ba3e1b3537219178aaa42
+  size: 17027
+  hash: md5
+  path: skill_label_encoder.pkl

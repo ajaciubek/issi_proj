@@ -10,10 +10,13 @@
 In order to be able to run application config file (./config/.ml-env) has to be created.  
 Following variables have to set:
 
-CUDA_VISIBLE_DEVICES=""  
-LABEL_MODEL_PATH="./data/role_label_encoder.pkl"  
-JOB_PREDICT_MODEL_PATH="./data/job_model.keras"  
-SENTENCE_TRANSFORMER_MODEL="all-MiniLM-L6-v2"  
+CUDA_VISIBLE_DEVICES="-1"
+LABEL_MODEL_PATH="./data/role_label_encoder.pkl"
+SKILLS_MODEL_PATH="./data/skill_label_encoder.pkl"
+JOB_PREDICT_MODEL_PATH="./data/job_model.keras"
+SKILLS_PREDICT_MODEL_PATH="./data/skills_model.keras"
+SENTENCE_TRANSFORMER_MODEL="all-MiniLM-L6-v2"
+SPACY_MODEL="en_core_web_sm"
 GEMINI_KEY=<your api key>  
 
 additional install of spacy model may be needed:
@@ -22,9 +25,9 @@ uv pip install https://github.com/explosion/spacy-models/releases/download/en_co
 
 ## Starting application service:
 1. uv sync
-2. dvc pull
+2. uv run dvc pull
 3. cd src
-4. uv run uvicorn api.app:app
+4. uv run uvicorn src.api.app:app
 
 ### Application service tests
 1. cd src
