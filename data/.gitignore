@@ -4,3 +4,4 @@
 /metadata.json
 /pre_processed_data.parquet
 /skills_model.keras
+/skill_label_encoder.pkl
